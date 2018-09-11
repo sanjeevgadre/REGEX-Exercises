@@ -1,0 +1,79 @@
+---
+title: "Solutions 1A"
+author: "Sanjeev Gadre"
+date: "September 10, 2018"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+These are solutions to the exercises available at https://www.r-exercises.com/2016/10/30/regular-expressions-part-1/
+
+I prefer using the "stringr" package to deal with text string manipulations
+```{r environment, echo=TRUE, message=FALSE}
+library(stringr)
+```
+
+###1A-1
+```{r 1A-1, echo=TRUE}
+text1 = "The current year is 2016"
+
+my_pattern = "[:digit:]"
+str_detect(text1, my_pattern)
+```
+
+###1A-2
+```{r 1A-2, echo=TRUE}
+string_position = str_locate_all(text1, my_pattern)
+string_position
+```
+
+###1A-3
+```{r 1A-3, echo=TRUE}
+my_pattern = "[[:upper:][:digit]]"
+str_detect(text1, my_pattern)
+```
+
+###1A-4
+```{r 1A-4, echo=TRUE}
+first_space = str_locate(text1, "[:space:]")
+first_space[1,1]
+```
+
+###1A-5
+```{r 1A-5, echo=TRUE}
+str_detect(text1,"[[:lower:].[:digit:]]")
+```
+
+###1A-6
+```{r 1A-6, echo=TRUE}
+string_pos_2 = str_locate(text1,"[:lower:].[:digit:]")[[1,1]]
+string_pos_2
+```
+
+###1A-7
+```{r 1A-7, echo=TRUE}
+string_pos_3 = str_locate(text1,"\\s[:lower:]{2}\\s")[[1,1]]
+string_pos_3
+```
+
+###1A-8
+```{r 1A-8, echo=TRUE}
+text2 = str_replace(text1, "\\s[:lower:]{2}\\s", " is not ")
+text2
+```
+
+###1A-9
+```{r 1A-9, echo=TRUE}
+string_pos_4 = str_locate(text2,"\\d{4}$")[[1,1]]
+string_pos_4
+```
+
+###1A-10
+```{r 1A-10, echo=TRUE}
+str_sub(text2, string_pos_4, string_pos_4+1)
+```
+
+---
