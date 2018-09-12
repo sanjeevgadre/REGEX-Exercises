@@ -1,0 +1,86 @@
+---
+title: "Solutions 2"
+author: "Sanjeev Gadre"
+date: "September 12, 2018"
+output: md_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ISLR)
+library(stringr)
+library(tidyr)
+data("College")
+data("mtcars")
+```
+
+These are solutions to the exercises found at http://r-tutorials.com/r-exercises-61-70-string-manipulation-gsub-regex-regular-expressions/
+
+###2.1
+```{r 2-1}
+college.names=row.names(College)
+texas.colleges=str_match(college.names, "Texas")
+summary(texas.colleges)
+texas.colleges.index=which(texas.colleges[,1]=="Texas")
+texas.colleges.index
+texas.college.details = College[texas.colleges.index,]
+head(texas.college.details)
+```
+
+###2.2
+```{r 2-2}
+college.names = str_split(college.names,"\\s", n=Inf)
+head(college.names)
+
+college.names = str_to_lower(college.names)
+head(college.names)
+
+college.names = casefold(college.names, upper=TRUE)
+head(college.names)
+```
+
+###2.3
+```{r 2-3}
+College %>% rownames() %>% str_which("University")
+
+College %>% rownames() %>% str_which("University") %>% length()
+College %>% rownames() %>% str_which("College") %>% length()
+```
+
+There is an error in the solution key provided on the page for counting the number of "College". It uses str_count() and then sum() to find out the number of entries with "College" in them. However, "Arkansas College (Lyon College)" will return a value of 2 as "College" appears twice and incorrectly increases the number of entries with "College" in them to 406. My solution of str_which() followed by length() avoids this "double counting". This error is present also for the code used to count the number of "University".
+
+###2.4
+```{r 2-4}
+"get" %>% str_pad(10, side="both", pad="0")
+
+paddedstring = "Oslo" %>% str_pad(10, side="left", pad=" ")
+paddedstring
+
+paddedstring %>% str_trim(side="left")
+
+paddedstring %>% str_trunc(7, side="left")
+```
+
+
+###2.8
+```{r 2-8}
+mtcars.names = rownames(mtcars)
+head(mtcars.names)
+
+mtcars.names %>% str_replace_all("\\d+", "") %>% str_replace_all("[:punct:]", "") %>% str_replace_all("\\s", "") %>% str_replace_all("[:upper:]", "") %>% str_replace_all("[:lower:]", "")
+```
+
+###2.9
+```{r 2-9}
+mtcars.names %>% str_replace_all("Merc(?=\\b)", "Mercedes")
+```
+
+###2.10
+```{r 2-10}
+mystring = "Gabriel-Henry.Tedd.-John (Yorkshire)"
+
+mystring %>% str_replace_all("\\.", " ")
+
+mystring %>% str_replace_all("\\s*\\([^\\)]*\\)", "")
+```
+
