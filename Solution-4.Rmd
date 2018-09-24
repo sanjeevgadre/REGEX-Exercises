@@ -1,0 +1,83 @@
+---
+title: "Solutions 4"
+author: "Sanjeev Gadre"
+date: "September 24, 2018"
+output: md_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stringr)
+library(tidyverse)
+```
+
+These are solutions to the exercises found at: https://www.r-exercises.com/2016/11/27/string-manipulation-exercises/. I have used the stringr library to solve these exercises
+
+###4.1
+```{r 4-1}
+answer.4.1 = read_lines("http://www.r-exercises.com/wp-content/uploads/2016/11/gambler.txt")
+answer.4.1
+```
+
+###4.2
+```{r 4-2}
+answer.4.2 = length(answer.4.1)
+answer.4.2
+```
+
+###4.3
+```{r 4-3}
+answer.4.3 = str_length(answer.4.1)
+answer.4.3
+```
+
+###4.4
+```{r 4-4}
+data("sentences")
+
+answer.4.4 = str_c(answer.4.1, sep=" ", collapse=" ")
+answer.4.4
+```
+
+###4.5
+```{r 4-5}
+answer.4.5 = str_to_upper(answer.4.4, locale="en")
+write_lines(answer.4.5, path="./gambler-upper.txt", append=FALSE)
+```
+
+###4.6
+```{r 4-6}
+answer.4.6 = str_replace_all(answer.4.1, c("a"="A", "t"="T"))
+answer.4.6
+```
+
+###4.7
+```{r 4-7}
+answer.4.7 = str_detect(answer.4.4, "lucky")
+answer.4.7
+```
+
+###4.8
+```{r 4-8}
+answer.4.8 = str_count(answer.4.4, "\\S*\\s") + 1
+answer.4.8
+```
+
+###4.9
+```{r 4-9}
+answer.4.9 = str_to_lower(answer.4.4, locale="en") %>% str_count("money")
+answer.4.9
+```
+
+###4.10
+```{r 4-10}
+first.number = readline("Enter a number: ")
+second.number = readline("Enter another number: ")
+
+first.number = as.integer(first.number)
+second.number = as.integer(second.number)
+division = round(first.number/second.number, digits=2)
+
+paste(c(first.number, "/", second.number, "=", division), sep = "")
+```
+
