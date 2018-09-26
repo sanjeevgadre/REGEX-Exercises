@@ -1,0 +1,88 @@
+---
+title: "Solutions 5"
+author: "Sanjeev Gadre"
+date: "September 26, 2018"
+output: md_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stringr)
+library(tm)
+library(dplyr)
+
+txt = system.file("texts", "txt", package = "tm")
+ovid = VCorpus(DirSource(txt, encoding = "UTF-8"), readerControl = list(language = "lat"))
+TEXT = lapply(ovid[1:5], as.character)
+OVID = c(data.frame(text=unlist(TEXT), stringsAsFactors = F))
+TEXT1 = TEXT[[4]]
+```
+
+These are solutions to the exercises found at: https://www.r-exercises.com/2017/05/18/character-functions-advanced/. I have used the stringr library to solve these exercises
+
+###5.1
+```{r 5-1}
+answer.5.1 = str_remove_all(TEXT1, "[:punct:]")
+answer.5.1
+```
+
+###5.2
+```{r 5-2}
+answer.5.2 = str_remove_all(answer.5.1, "[:blank:]") %>% str_length() %>% sum()
+answer.5.2
+```
+
+###5.3
+```{r 5-3}
+answer.5.3 = answer.5.1 %>% str_c(sep="", collapse=" ") %>% str_squish() %>% str_split("\\s", n=Inf, simplify=TRUE)
+length(answer.5.3)
+```
+
+###5.4
+```{r 5-4}
+answer.5.4 = answer.5.3 %>% str_to_lower() %>% table()  %>% order(decreasing = TRUE)  %>% .[1]
+table(answer.5.3) %>% names(.) %>% .[answer.5.4]
+```
+
+###5.5
+```{r 5-5}
+answer.5.5 = str_which(answer.5.3, "[:upper:]")
+answer.5.3[answer.5.5] %>% unique()
+```
+
+###5.6
+```{r 5-6}
+answer.5.6 = OVID %>% str_to_lower() %>% str_remove_all("[:punct:]") %>% str_extract_all("\\S{1}", simplify=TRUE) %>% table()
+index = order(answer.5.6, decreasing=TRUE)
+answer.5.6[index[1:5]]
+```
+
+
+###5.7
+```{r 5-7}
+answer.5.7 = letters %in% names(answer.5.6)
+letters[answer.5.7 == FALSE]
+```
+
+###5.8
+```{r 5-8}
+answer.5.8 = str_extract(OVID, c("Chandler", "Phoebe", "Ross", "Monica", "Joey"))
+answer.5.8[!is.na(answer.5.8)]
+```
+
+###5.9
+```{r 5-9}
+answer.5.9 = as.character(OVID[[1]])
+str_which(answer.5.9, "Phoebe") %>% answer.5.9[.]
+```
+
+###5.10
+```{r 5-10}
+answer.5.10 = answer.5.9 %>% str_c(sep="", collapse=" ") %>% str_squish() %>% str_remove_all("[:punct:]") %>% str_to_lower() %>% str_split("\\s", n=Inf, simplify=TRUE)
+
+str_sub(answer.5.10, start=-1L, end=-1L) %>% .[] %in% c("a","e","i","o","u") %>% sum() #number of words that end in a vowel
+
+length(answer.5.10) - str_sub(answer.5.10, start=-1L, end=-1L) %>% .[] %in% c("a","e","i","o","u") %>% sum() #number of words that end in a consonants
+
+```
+
