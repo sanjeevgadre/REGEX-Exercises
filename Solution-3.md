@@ -137,8 +137,8 @@ I have used the stringr library to solve these exercises
 
     data("sentences")
 
-    two.char.words = str_c(sentences, sep=" ", collapse="") %>% str_to_lower(locale = "en") %>% str_replace_all("[:punct:]", "") %>% str_split("\\s", n=Inf, simplify=TRUE) %>% .[str_length(.) == 2] %>% as.data.frame() %>% `colnames<-`(value="Words")
-      
-    two.char.words %>% ggplot(aes(Words))+ geom_bar()
+    two.char.words = str_c(sentences, sep=" ", collapse=" ") %>% str_to_lower(locale = "en") %>% str_replace_all("[:punct:]", "") %>% str_split("\\s", n=Inf, simplify=TRUE) %>% .[str_length(.) == 2] %>% table(.) %>% as.data.frame(stringsAsFactors = FALSE) %>% `colnames<-`(c("Words", "Frequency"))
+
+    two.char.words %>% ggplot(aes(x= reorder(Words, -Frequency), y= Frequency))+ geom_col(fill="Red", alpha=0.5)+ xlab("Words")
 
 ![](Solution-3_files/figure-markdown_strict/3-10-1.png)
