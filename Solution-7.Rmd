@@ -1,0 +1,121 @@
+---
+title: "Solutions 7"
+author: "Sanjeev Gadre"
+date: "October 01, 2018"
+output: md_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stringr)
+library(dplyr)
+library(dslabs)
+library(tidyverse)
+```
+
+These are solutions to the exercises found at: https://www.r-exercises.com/2018/01/22/stringr-basic-functions-exercises/. I have used the stringr library to solve these exercises
+
+###7.1
+```{r 7-1}
+data("gapminder")
+
+country = gapminder$country %>% 
+  unique() %>% 
+  as.vector(mode="character")
+
+continent = country %>% 
+  match(., gapminder$country) %>% 
+  gapminder$continent[.] %>% 
+  as.vector(mode="character")
+
+df = cbind.data.frame(country, continent)
+```
+
+###7.2
+```{r 7-2}
+df$country %>% str_length() %>% mean()
+```
+
+###7.3
+```{r 7-3}
+str_sub(df$country, 1L, 1L) %>% 
+  str_to_lower() %>% 
+  table() %>% 
+  as.data.frame(stringsAsfactors = FALSE) %>% 
+  `colnames<-`(c("first.letter", "frequency")) %>% 
+  ggplot(aes(reorder(first.letter, -frequency), frequency))+ geom_col(fill="red", alpha=0.5)+ xlab("First letter in a country's name")
+
+str_remove_all(df$country, "[:punct:]") %>% 
+  str_sub(-1L) %>% 
+  str_to_lower() %>% 
+  table() %>% 
+  as.data.frame(stringsAsfactors = FALSE) %>% 
+  `colnames<-`(c("last.letter", "frequency")) %>% 
+  ggplot(aes(reorder(last.letter, -frequency), frequency))+ geom_col(fill="blue", alpha=0.5)+xlab("Last letter in a country's name")
+```
+
+
+###7.4
+```{r 7-4}
+str_subset(df$country, "\\sand\\s")
+```
+
+###7.5
+```{r 7-5}
+df$country = str_remove_all(df$country, "[\\,\\.]")
+```
+
+###7.6
+```{r 7-6}
+str_c("mouse likes cat ",  str_dup("very ", 1:3), "much")
+
+## The question is incorrectly framed. The desired answer required in the question misses the third "very".
+```
+
+###7.7
+```{r 7-7}
+str_trunc(df$country, 12L, side="right", ellipsis=".")
+
+
+str_sub(df$country, 1L, end=ifelse(str_length(df$country)>12L, -(str_length(df$country)-10), -1L)) %>% str_c(.,".")
+
+```
+
+###7.8
+```{r 7-8}
+data("sentences")
+
+sentences %>% 
+  str_remove_all("[:punct:]") %>% 
+  str_c(sep=" ", collapse=" ") %>% 
+  str_split(pattern="\\s", n=Inf, simplify=TRUE) %>% 
+  str_to_lower() %>%
+  .[str_length(.)==2] %>%
+  table() %>% 
+  as.data.frame(stringsAsfactors=FALSE) %>% 
+  `colnames<-`(c("Words", "Frequency")) %>% 
+  ggplot(aes(reorder(Words, -Frequency), Frequency))+ geom_col(fill="magenta", alpha=0.5)+ xlab("Words")
+```
+
+###7.9
+```{r 7-9}
+dat = df$country %>% 
+  str_remove_all(pattern="[:punct:]") %>%
+  str_to_lower() %>%
+  str_remove_all("\\s") %>%
+  str_c(sep="", collapse="") %>%
+  str_split(pattern="", n=Inf, simplify=TRUE) %>%
+  table() %>%
+  as.data.frame(stringsAsfactors=FALSE) %>%
+  `colnames<-`(c("letters", "frequency"))
+
+dat[which.max(dat$frequency),]
+```
+
+###7.10
+```{r 7-10}
+dat = str_count(df$country, "[A,a]")
+
+df[which.max(dat),]
+```
+The answer in the solution key is incorrect because it does not take into account both the cases of the letter.
