@@ -1,0 +1,96 @@
+---
+title: "Solutions 8"
+author: "Sanjeev Gadre"
+date: "October 03, 2018"
+output: md_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stringr)
+library(dplyr)
+
+addresses <- c("14 Pine Street, Los Angeles", "152 Redwood Street, Seattle", "8 Washington Boulevard, New York")
+
+products <- c("TV ", " laptop", "portable charger", "Wireless Keybord", " HeadPhones ")
+
+long_sentences <- stringr::sentences[1:10]
+
+field_names <- c("order_number", "order_date", "customer_email", "product_title", "amount")
+
+employee_skills <- c("John Bale (Beginner)", "Rita Murphy (Pro)", "Chris White (Pro)", "Sarah Reid (Medium)")
+```
+
+These are solutions to the exercises found at: https://www.r-exercises.com/2018/10/01/pull-the-right-strings-with-stringr-exercises/. I have used the stringr library to solve these exercises
+
+###8.1
+```{r 8-1}
+addresses %>% str_to_lower()
+```
+
+###8.2
+```{r 8-2}
+addresses %>% str_match("[0-9]*\\s")
+```
+
+###8.3
+```{r 8-3}
+addresses %>% str_split("\\,", n=2, simplify=TRUE)
+```
+
+
+###8.4
+```{r 8-4}
+x = addresses %>% str_split("\\,", n=2, simplify=TRUE)
+y = x[,1] %>% str_split("\\s", n=2, simplify=TRUE)
+cbind(y,x[,2]) %>% as.matrix()
+
+#Alternate, more concise, solution per the key
+addresses %>% str_split("(?<=[0-9])\\s|,\\s", n=Inf, simplify=TRUE)
+```
+
+##8.5
+```{r 8-5}
+first.word = str_extract(long_sentences, "^[A-Z]\\w+")
+last.word = str_extract(long_sentences, "\\w+\\.$") %>% str_sub(.,1,-2)
+
+ifelse((str_sub(first.word,1,1)=="T" & str_sub(last.word,-1,-1) == "s"), str_c(first.word, " ", last.word), 
+       ifelse(str_sub(first.word,1,1)=="T", first.word,
+              ifelse(str_sub(last.word,-1,-1)=="s", last.word,
+                     "NA")
+              )
+       )
+
+#Alternate, more concise solution, per the key
+str_extract_all(string = long_sentences, pattern = "^T[A-z]+|[A-z]+s\\.$")
+```
+
+###8.6
+```{r 8-6}
+str_trunc(long_sentences, 20, side="right", ellipsis="..")
+```
+
+###8.7
+```{r 8-7}
+products %>% str_squish() %>% str_to_upper(locale="en")
+```
+
+###8.8
+```{r 8-8}
+field_names %>% str_replace_all("_", " ") %>% str_to_title()
+```
+
+###8.9
+```{r 8-9}
+field_names %>% 
+  str_length() %>% 
+    which.max() %>% 
+      field_names[.] %>% 
+        str_length() %>%
+          str_pad(field_names, ., side="left", pad=" ")
+```
+
+###8.10
+```{r 7-10}
+str_match(employee_skills, "([A-z ]*) \\((Pro|Medium)\\)")[,2:3]
+```
