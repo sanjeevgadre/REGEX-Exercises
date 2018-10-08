@@ -91,6 +91,6 @@ field_names %>%
 ```
 
 ###8.10
-```{r 7-10}
+```{r 8-10}
 str_match(employee_skills, "([A-z ]*) \\((Pro|Medium)\\)")[,2:3]
 ```
