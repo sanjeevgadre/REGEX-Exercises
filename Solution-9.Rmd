@@ -1,0 +1,89 @@
+---
+title: "Solutions 9"
+author: "Sanjeev Gadre"
+date: "October 10, 2018"
+output: md_document
+---
+
+```{r setup, include=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stringr)
+library(dplyr)
+library(tm)
+library(SnowballC)
+```
+
+These are solutions to the exercises found at: https://www.r-exercises.com/2017/11/27/text-data-wrangling-exercises/. I have used the stringr library to solve these exercises
+
+###9.1
+```{r 9-1}
+url.9.1 = "http://textfiles.com/stories/hansgrtl.txt"
+
+hs = readLines(url.9.1)
+```
+
+###9.2
+```{r 9-2}
+hs.9.2 = hs %>% str_split("\\s") %>% unlist
+```
+
+###9.3
+```{r 9-3}
+hs.9.3 = hs.9.2 %>% str_to_lower()
+```
+
+###9.4
+```{r 9-4}
+hs.9.4 = hs.9.3 %>% str_remove_all("[:punct:]") %>% .[.!=""]
+```
+
+##9.5
+```{r 9-5}
+hs.9.4 %>% table() %>% sort(decreasing=TRUE) %>%
+  .[1:15] %>% barplot()
+```
+
+###9.6
+```{r 9-6}
+hs.9.4 %>% .[!. %in% stopwords("en")] %>% 
+  table() %>% sort(decreasing=TRUE) %>% 
+  .[1:15] %>% barplot() 
+```
+
+###9.7
+```{r 9-7}
+hs.9.7 = hs.9.4[hs.9.4 != "=="] 
+
+hs.9.7 %>% .[!. %in% stopwords("en")] %>% 
+  stemDocument(language="english") %>% table() %>% sort(decreasing=TRUE) %>% 
+  .[1:15] %>% barplot()
+```
+
+###9.8
+```{r 9-8}
+hs.9.8 = hs[3:length(hs)]
+
+hs.9.8.a = str_c(hs.9.8[1:26], sep=" ", collapse=" ") %>% str_squish()
+hs.9.8.b = str_c(hs.9.8[27:52], sep=" ", collapse=" ") %>% str_squish()
+hs.9.8.c = str_c(hs.9.8[53:78], sep=" ", collapse=" ") %>% str_squish()
+hs.9.8.d = str_c(hs.9.8[79:104], sep=" ", collapse=" ") %>% str_squish()
+
+hs.9.8 = c(hs.9.8.a, hs.9.8.b, hs.9.8.c, hs.9.8.d)
+```
+
+###9.9
+```{r 9-9}
+hs.9.9 = Corpus(VectorSource(hs.9.8)) 
+hs.9.9 = tm_map(hs.9.9, tolower)
+hs.9.9 = tm_map(hs.9.9, removeWords, stopwords("en"))
+hs.9.9 = tm_map(hs.9.9, removePunctuation)
+hs.9.9 = tm_map(hs.9.9, stemDocument)
+
+hs.9.9[[2]][1]
+```
+
+###9.10
+```{r 9-10}
+hs.9.9 %>% TermDocumentMatrix() %>% 
+  as.matrix() %>% cor()
+```
